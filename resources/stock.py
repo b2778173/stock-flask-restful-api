@@ -1,10 +1,11 @@
 from flask import Flask, request
 from flask_restful import Resource
 import requests
+from config import config
 
 app = Flask(__name__)
 # Load the default configuration
-app.config.from_object('config.dev')
+app.config.from_object(config)
 API_KEY = (app.config["API_KEY"])
 FINNHUB_BASE_URL = (app.config["FINNHUB_BASE_URL"])
 

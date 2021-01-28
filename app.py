@@ -6,8 +6,6 @@ from resources.stock import News
 from resources.stock import CompanyNews
 
 app = Flask(__name__)
-# Load the default configuration
-app.config.from_object('config.dev')
 api = Api(app)
 
 
@@ -16,4 +14,4 @@ api.add_resource(News, '/news')
 api.add_resource(CompanyNews, '/company-news')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
