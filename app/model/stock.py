@@ -1,6 +1,6 @@
-from app import db
+import mongoengine
 
-
-class Stock(db.model):
-    id = db.Clolumn(db.Integer, primary_key = True)
-    name = db.Column(db.String(64))
+class Stock(mongoengine.Document):
+    id = mongoengine.IntField()
+    name = mongoengine.StringFiled()
+    market_cap = mongoengine.IntField()

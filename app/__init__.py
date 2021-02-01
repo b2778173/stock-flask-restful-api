@@ -16,11 +16,14 @@ from app.resources.stock import Stock
 from app.resources.stock import News
 from app.resources.stock import CompanyNews
 from app.resources.wishlist import FindWishList
+from app.resources.wishlist import AddWishList
+from app.resources.wishlist import RemoveWishList
+
+
 
 
 
 def create_app(config_name):
-    config_name = 'development'
     print('config_name=' , str(config_name))
     app = Flask(__name__)
     api = Api(app)
@@ -31,4 +34,6 @@ def create_app(config_name):
     api.add_resource(News, '/news')
     api.add_resource(CompanyNews, '/company-news')
     api.add_resource(FindWishList, '/wishlist')
+    api.add_resource(AddWishList, '/add_wishlist/<symbol>')
+    api.add_resource(RemoveWishList, '/remove_wishlist')
     return app
