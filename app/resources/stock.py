@@ -5,7 +5,8 @@ from app.config import config
 
 app = Flask(__name__)
 # Load the default configuration
-app.config.from_object(config)
+app.config.from_object(config['development'])
+print('stock app.config=',app.config["API_KEY"])
 API_KEY = (app.config["API_KEY"])
 FINNHUB_BASE_URL = (app.config["FINNHUB_BASE_URL"])
 
