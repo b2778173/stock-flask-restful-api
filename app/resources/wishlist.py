@@ -2,8 +2,9 @@ from flask import Flask, request, jsonify
 from flask_restful import Resource
 from app import db
 from bson.json_util import loads, dumps
+from app.model.wishlist import Wishlist
 
-collection = db.tickers
+collection = db.wishlist
 
 
 def beautify(val):
@@ -22,23 +23,21 @@ class FindWishList(Resource):
 
 class AddWishList(Resource):
     def get(self, symbol):
-        print(symbol)
-        data = {'name': symbol, 'marketCap': 1, 'price': 1}
         try:
-            collection.insert_one(data)
+            Wishlist.add_wishlist(symbol)
             print(f'insert {symbol} success')
             return {'message': f'insert {symbol} success'}, 200
-        except:
-            print(f'insert {symbol} fail')
-            return {'message': f'insert {symbol} fail'}, 403
+        except Exception as e:
+            print(f'drop fail, error: {e}')
+            return {'message': f'insert {symbol} fail, error: {e}'}, 403
 
 
 class RemoveWishList(Resource):
-    def delete(self):
+    def delete(self, symbol):
         try:
-            collection.drop()
+            Wishlist.remove_wishlist(symbol)
             print(f'drop success')
             return {'message': 'drop success'}, 200
-        except:
-            print(f'drop fail')
-            return {'message': 'drop fail'}, 403
+        except Exception as e:
+            print(f'drop fail, error: {e}')
+            return {f'drop fail, error: {e}'}, 400
