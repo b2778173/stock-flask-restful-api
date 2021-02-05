@@ -1,6 +1,10 @@
 from mongoengine import *
 from app.model.watchlist import Watchlist
 from datetime import datetime
+from flask import jsonify
+import json
+
+
 
 
 class Profile(Document):
@@ -13,8 +17,11 @@ class Profile(Document):
     # watchlist = EmbeddedDocumentField(Watchlist)
 
     meta = {'db_alias': 'good'}
+    def getAll():
+        all = [json.loads(p.to_json()) for p in Profile.objects]
+        return jsonify(all)
 
-    def add_profile(self, user_id, name, create_time, email, facebook_id, line_id):
+    def add_profile( user_id, name, create_time, email, facebook_id, line_id):
         print(user_id, name, create_time, email, facebook_id, line_id)
         profile = Profile(user_id=user_id, name=name, create_time=create_time,
                           email=email, facebook_id=facebook_id, line_id=line_id)

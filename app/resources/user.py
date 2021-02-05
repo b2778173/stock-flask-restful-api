@@ -3,6 +3,11 @@ from flask_restful import Resource
 from app.model.profile import Profile
 
 
+class getUsers(Resource):
+    def get(self):
+        return Profile.getAll()
+
+
 class CreateUser(Resource):
     def post(self):
         print(request.get_json())
@@ -14,7 +19,7 @@ class CreateUser(Resource):
         line_id = request.get_json().get('line_id')
         print(user_id, name, create_time, email, facebook_id, line_id)
         try:
-            Profile.add_profile(self, user_id, name, create_time,
+            Profile.add_profile(user_id, name, create_time,
                                 email, facebook_id, line_id)
             print(f'insert {name} success')
             return {'message': f'insert {name} success'}, 201

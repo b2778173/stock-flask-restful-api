@@ -19,10 +19,17 @@ class FindWatchlist(Resource):
         return jsonify(result)
 
 
+class GetWatchlist(Resource):
+    def get(self):
+        return Watchlist.get_wishlist()
+
+
 class AddWatchlist(Resource):
     def get(self, symbol):
+        market_cap = request.args.get('market_cap ')
+        price = request.args.get('price')
         try:
-            Watchlist.add_wishlist(symbol)
+            Watchlist.add_wishlist(symbol, market_cap, price)
             print(f'insert {symbol} success')
             return {'message': f'insert {symbol} success'}, 200
         except Exception as e:

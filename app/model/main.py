@@ -5,7 +5,7 @@ import mongoengine
 def setup():
     mongoengine.register_connection(
         alias='good',
-        db='test',
+        db='stock_flask_api_db',
         host='testapidb.mongo.cosmos.azure.com',
         port=10255,
         username='testapidb',
