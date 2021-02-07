@@ -11,16 +11,16 @@ class getUsers(Resource):
 class CreateUser(Resource):
     def post(self):
         print(request.get_json())
-        user_id = request.get_json().get('user_id')
         name = request.get_json().get('name')
         create_time = request.get_json().get('create_time')
         email = request.get_json().get('email')
-        facebook_id = request.get_json().get('facebook_id')
-        line_id = request.get_json().get('line_id')
-        print(user_id, name, create_time, email, facebook_id, line_id)
+        address = request.get_json().get('address')
+        social_media = request.get_json().get('social_media')
+        watchlist = request.get_json().get('watchlist')
+        print(name, create_time, email, social_media)
         try:
-            Profile.add_profile(user_id, name, create_time,
-                                email, facebook_id, line_id)
+            Profile.add_profile(name, create_time,
+                                email, address, social_media, watchlist)
             print(f'insert {name} success')
             return {'message': f'insert {name} success'}, 201
         except Exception as e:
