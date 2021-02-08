@@ -3,6 +3,7 @@ from app.model.watchlist import Watchlist
 from datetime import datetime
 from flask import jsonify
 import json
+from bson.objectid import ObjectId
 
 
 class Address(EmbeddedDocument):
@@ -34,7 +35,17 @@ class Profile(Document):
     meta = {'db_alias': 'good'}
 
     def getAll():
-        all = [json.loads(p.to_json()) for p in Profile.objects]
+        # all = [json.loads(p.to_json()) for p in Profile.objects]
+        all = []
+        for p in Profile.objects:
+            profileJSON = json.loads(p.to_json())
+            objectId = (profileJSON['_id'])['$oid'] 
+            profileJSON['_id'] = str(ObjectId(objectId))
+            # print(ObjectId(objectId))
+            all.append(profileJSON)
+            # print(json.loads(p.to_json())['_id']['$oid'])
+            # print(ObjectId("543b591d91b9e510a06a42e2"))
+
         return jsonify(all)
 
     def add_profile(name, create_time, email, address, social_media, watchlist):

@@ -12,11 +12,13 @@ from flask_restful import Resource, Api
 from app.config import config
 from app.model.main import setup
 from app.model.watchlist import Watchlist
+import JWT
 
 
 # connect mongo
 setup()
 
+jwt = JWT()
 
 def create_app(config_name):
     print('config_name=', str(config_name))

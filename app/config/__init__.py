@@ -7,6 +7,8 @@ load_dotenv()
 class Config:
     FINNHUB_BASE_URL = os.getenv("FINNHUB_BASE_URL")
     API_KEY = os.getenv("API_KEY")
+    SECRET_KEY = ""
+    JWT_EXPIRATION = 300
 
 
 class DevelopmentConfig(Config):
