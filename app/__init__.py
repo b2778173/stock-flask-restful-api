@@ -1,5 +1,8 @@
 from app.resources.user import CreateUser
 from app.resources.user import getUsers
+from app.resources.user import UpdateUser
+from app.resources.user import ChangePassword
+
 from app.resources.watchlist import RemoveWatchlist
 from app.resources.watchlist import AddWatchlist
 from app.resources.watchlist import GetWatchlist
@@ -12,13 +15,15 @@ from flask_restful import Resource, Api
 from app.config import config
 from app.model.main import setup
 from app.model.watchlist import Watchlist
-import JWT
+from app.model.profile import Profile
+from flask_jwt import JWT
 
 
 # connect mongo
 setup()
 
-jwt = JWT()
+jwt = JWT(None, Profile.authenticate, Profile.identity)
+
 
 def create_app(config_name):
     print('config_name=', str(config_name))
@@ -27,6 +32,7 @@ def create_app(config_name):
     # Load the default configuration
     app.config.from_object(config[config_name])
     # print(f'app.config = {app.config}')
+    jwt.init_app(app)
     api.add_resource(Stock, '/stock')
     api.add_resource(News, '/news')
     api.add_resource(CompanyNews, '/company-news')
@@ -35,5 +41,7 @@ def create_app(config_name):
     api.add_resource(RemoveWatchlist, '/remove_watchlist/<symbol>')
     api.add_resource(CreateUser, '/create_user')
     api.add_resource(getUsers, '/get_users')
+    api.add_resource(UpdateUser, '/update_user/<username>')
+    api.add_resource(ChangePassword, '/change_password/<username>')
 
     return app
