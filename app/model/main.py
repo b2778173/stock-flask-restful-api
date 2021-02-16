@@ -20,10 +20,10 @@ def setup():
         db='stock_flask_api_db',
         host='127.0.0.1',
         port=27017,
-        username='test',
-        password='test',
-        ssl=True,
-        retrywrites=False
+        # username='test',
+        # password='test',
+        # ssl=True,
+        # retrywrites=False
     )
 
 

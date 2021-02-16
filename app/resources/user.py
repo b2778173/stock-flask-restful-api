@@ -11,7 +11,6 @@ class getUsers(Resource):
 
 
 class CreateUser(Resource):
-    @jwt_required()
     def post(self):
         print(request.get_json())
         username = request.get_json().get('username')
