@@ -19,8 +19,6 @@ from app.model.profile import Profile
 from flask_jwt import JWT
 
 
-# connect mongo
-setup()
 
 jwt = JWT(None, Profile.authenticate, Profile.identity)
 
@@ -33,6 +31,9 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     # print(f'app.config = {app.config}')
     jwt.init_app(app)
+    # connect mongo
+    setup(app.config['MONGODB_CONNECTION_STRING'])
+
     api.add_resource(Stock, '/stock')
     api.add_resource(News, '/news')
     api.add_resource(CompanyNews, '/company-news')

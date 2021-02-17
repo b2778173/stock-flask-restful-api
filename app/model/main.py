@@ -1,5 +1,4 @@
 import mongoengine
-from pymongo import ReadPreference
 
 
 def azure():
@@ -13,11 +12,12 @@ def azure():
         ssl=True,
         retrywrites=False
     )
-# local db 
-def setup():
-    print('connection setup')
+# local db
+
+
+def setup(host):
     mongoengine.connect(
         'stock_flask_api_db',
         alias='good',
-        host='mongodb+srv://b2778173:a2765811@cluster0.4scm7.mongodb.net/stock_flask_api_db?retryWrites=true&w=majority'
+        host=host
     )
