@@ -13,8 +13,7 @@ def azure():
         ssl=True,
         retrywrites=False
     )
-
-
+# local db 
 def setup():
     print('connection setup')
     mongoengine.connect(
