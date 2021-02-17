@@ -56,6 +56,9 @@ class Profile(Document):
             profileJSON = json.loads(p.to_json())
             # objectId = (profileJSON['_id'])['$oid']
             profileJSON['_id'] = str(p.pk)
+            profileJSON['create_time'] = (p.create_time).timestamp()
+            # remove password
+            del profileJSON['password_hash']
             all.append(profileJSON)
 
         return jsonify(all)

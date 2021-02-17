@@ -14,7 +14,7 @@ class Watchlist(Document):
         result = []
         for w in Watchlist.objects():
             print('w=', w)
-            # mongoengine provide to_json() 
+            # mongoengine provide to_json()
             result.append(json.loads(w.to_json()))
             print('result=', result)
         return jsonify(result)

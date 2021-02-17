@@ -31,7 +31,7 @@ class News(Resource):
 
 
 class CompanyNews(Resource):
-    def get(self):
+    def get():
         symbol = (request.args.get('symbol'))
         begin = (request.args.get('from'))
         end = (request.args.get('to'))

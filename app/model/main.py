@@ -1,5 +1,5 @@
 import mongoengine
-
+from pymongo import ReadPreference
 
 
 def azure():
@@ -14,17 +14,11 @@ def azure():
         retrywrites=False
     )
 
+
 def setup():
-    mongoengine.register_connection(
+    print('connection setup')
+    mongoengine.connect(
+        'stock_flask_api_db',
         alias='good',
-        db='stock_flask_api_db',
-        host='127.0.0.1',
-        port=27017,
-        # username='test',
-        # password='test',
-        # ssl=True,
-        # retrywrites=False
+        host='mongodb+srv://b2778173:a2765811@cluster0.4scm7.mongodb.net/stock_flask_api_db?retryWrites=true&w=majority'
     )
-
-
-
