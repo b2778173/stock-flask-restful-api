@@ -1,3 +1,5 @@
+from flask_cors import CORS
+
 from app.resources.user import CreateUser
 from app.resources.user import getUsers
 from app.resources.user import UpdateUser
@@ -27,6 +29,7 @@ def create_app(config_name):
     print('config_name=', str(config_name))
     app = Flask(__name__)
     api = Api(app)
+    CORS(app)
     # Load the default configuration
     app.config.from_object(config[config_name])
     # print(f'app.config = {app.config}')
