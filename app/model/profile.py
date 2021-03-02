@@ -25,9 +25,9 @@ class Watchlist(EmbeddedDocument):
 
 class Profile(Document):
     user_id = StringField(require=False)
-    username = StringField(max_length=128)
-    password_hash = StringField(max_length=128)
-    name = StringField(default="???")
+    username = StringField(max_length=128, required=True)
+    password_hash = StringField(max_length=128,  required=True)
+    name = StringField(default="???", required=True)
     create_time = DateTimeField(default=datetime.now)
     email = EmailField()
     social_media = EmbeddedDocumentField(SocialMedia, default={})
