@@ -27,6 +27,7 @@ jwt = JWT(None, Profile.authenticate, Profile.identity)
 
 def create_app(config_name):
     print('config_name=', str(config_name))
+    print('start successfully')
     app = Flask(__name__)
     api = Api(app)
     CORS(app)
@@ -39,7 +40,7 @@ def create_app(config_name):
 
     api.add_resource(Stock, '/stock')
     api.add_resource(News, '/news')
-    api.add_resource(CompanyNews, '/company-news')
+    api.add_resource(CompanyNews, '/company_news')
     api.add_resource(GetWatchlist, '/watchlist')
     api.add_resource(AddWatchlist, '/add_watchlist/<symbol>')
     api.add_resource(RemoveWatchlist, '/remove_watchlist/<symbol>')
