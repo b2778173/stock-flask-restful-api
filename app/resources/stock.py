@@ -3,6 +3,7 @@ from flask.globals import current_app
 from flask_restful import Resource
 import requests
 import finnhub
+from datetime import datetime
 
 
 # app = Flask(__name__)
@@ -23,6 +24,37 @@ class Stock(Resource):
         return r
 
 
+class Stock_candle(Resource):
+    def get(self):
+        API_KEY = current_app.config["API_KEY"]
+        finnhub_client = finnhub.Client(api_key=API_KEY)
+        symbol = (request.args.get('symbol'))
+        resolution = (request.args.get('resolution'))
+        _from = (request.args.get('from'))
+        to = (request.args.get('to'))
+        response = finnhub_client.stock_candles(
+            symbol, resolution, _from, to)
+        if response['s'] == 'no_data':
+            return None
+        else:
+            return self.formatResponse(t=response['t'], c=response['c'], o=response['o'], h=response['h'], l=response['l'], v=response['v'])
+
+    def formatResponse(self, t, c, o, h, l, v):
+        print(t, c)
+        result = []
+        for idx, date in enumerate(t):
+            format_date = datetime.utcfromtimestamp(
+                date).strftime('%Y-%m-%d')
+            result.append({
+                'date': date * 1000,
+                'open': o[idx],
+                'height': h[idx],
+                'volumn': v[idx],
+                'close': c[idx]
+            })
+        return result
+
+
 class News(Resource):
     def get(self):
         API_KEY = current_app.config["API_KEY"]
@@ -40,6 +72,6 @@ class CompanyNews(Resource):
         symbol = (request.args.get('symbol'))
         begin = (request.args.get('from'))
         end = (request.args.get('to'))
-        print(begin,end)
+        print(begin, end)
         r = finnhub_client.company_news(symbol, _from=begin, to=end)
         return r

@@ -10,7 +10,8 @@ from app.resources.watchlist import AddWatchlist
 from app.resources.watchlist import GetWatchlist
 from app.resources.stock import CompanyNews
 from app.resources.stock import News
-from app.resources.stock import Stock
+from app.resources.stock import Stock 
+from app.resources.stock import Stock_candle
 from flask import Flask, request
 from flask_restful import Resource, Api
 
@@ -19,7 +20,6 @@ from app.model.main import setup
 from app.model.watchlist import Watchlist
 from app.model.profile import Profile
 from flask_jwt import JWT
-
 
 
 jwt = JWT(None, Profile.authenticate, Profile.identity)
@@ -39,6 +39,7 @@ def create_app(config_name):
     setup(app.config['MONGODB_CONNECTION_STRING'])
 
     api.add_resource(Stock, '/stock')
+    api.add_resource(Stock_candle, '/stock_candle')
     api.add_resource(News, '/news')
     api.add_resource(CompanyNews, '/company_news')
     api.add_resource(GetWatchlist, '/watchlist')
