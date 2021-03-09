@@ -24,6 +24,15 @@ class Stock(Resource):
         return r
 
 
+class Stock(Resource):
+    def get(self):
+        API_KEY = current_app.config["API_KEY"]
+        finnhub_client = finnhub.Client(api_key=API_KEY)
+        symbol = (request.args.get('symbol'))
+        r = finnhub_client.symbol_lookup(symbol)
+        return r
+
+
 class Stock_candle(Resource):
     def get(self):
         API_KEY = current_app.config["API_KEY"]
@@ -40,7 +49,7 @@ class Stock_candle(Resource):
             return self.formatResponse(t=response['t'], c=response['c'], o=response['o'], h=response['h'], l=response['l'], v=response['v'])
 
     def formatResponse(self, t, c, o, h, l, v):
-        print(t, c)
+        # print(t, c)
         result = []
         for idx, date in enumerate(t):
             format_date = datetime.utcfromtimestamp(
@@ -53,6 +62,20 @@ class Stock_candle(Resource):
                 'close': c[idx]
             })
         return result
+
+
+class Day_mover(Resource):
+    def get(self):
+        start = (request.args.get('start'))
+        count = (request.args.get('count'))
+        url = "https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/v2/get-movers"
+        headers = {
+            'x-rapidapi-key': "5e1711a842mshcdc573475e2a4f1p173affjsnee500c8bd126",
+            'x-rapidapi-host': "apidojo-yahoo-finance-v1.p.rapidapi.com"
+        }
+        querystring = {"region":"US","lang":"en-US","start":start,"count":count}
+        r = requests.get(url, headers=headers, params=querystring)
+        return r.json()
 
 
 class News(Resource):

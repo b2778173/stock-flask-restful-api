@@ -12,6 +12,7 @@ from app.resources.stock import CompanyNews
 from app.resources.stock import News
 from app.resources.stock import Stock 
 from app.resources.stock import Stock_candle
+from app.resources.stock import Day_mover
 from flask import Flask, request
 from flask_restful import Resource, Api
 
@@ -40,6 +41,7 @@ def create_app(config_name):
 
     api.add_resource(Stock, '/stock')
     api.add_resource(Stock_candle, '/stock_candle')
+    api.add_resource(Day_mover, '/day_mover')
     api.add_resource(News, '/news')
     api.add_resource(CompanyNews, '/company_news')
     api.add_resource(GetWatchlist, '/watchlist')
