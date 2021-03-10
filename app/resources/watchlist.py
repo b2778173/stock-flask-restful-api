@@ -4,7 +4,6 @@ from bson.json_util import loads, dumps
 from app.model.watchlist import Watchlist
 
 
-
 def beautify(val):
     val.pop('_id')
     return val

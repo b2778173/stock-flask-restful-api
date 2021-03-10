@@ -1,24 +1,11 @@
 from flask_cors import CORS
-
-from app.resources.user import CreateUser
-from app.resources.user import getUsers
-from app.resources.user import UpdateUser
-from app.resources.user import ChangePassword
-
-from app.resources.watchlist import RemoveWatchlist
-from app.resources.watchlist import AddWatchlist
-from app.resources.watchlist import GetWatchlist
-from app.resources.stock import CompanyNews
-from app.resources.stock import News
-from app.resources.stock import Stock 
-from app.resources.stock import Stock_candle
-from app.resources.stock import Day_mover
-from flask import Flask, request
-from flask_restful import Resource, Api
-
+from app.resources.user import CreateUser, getUsers, UpdateUser, ChangePassword, getCurrentUser
+from app.resources.watchlist import RemoveWatchlist, AddWatchlist, GetWatchlist
+from app.resources.stock import CompanyNews, News, Stock, Stock_candle, Day_mover
+from flask import Flask
+from flask_restful import Api
 from app.config import config
 from app.model.main import setup
-from app.model.watchlist import Watchlist
 from app.model.profile import Profile
 from flask_jwt import JWT
 
@@ -49,6 +36,7 @@ def create_app(config_name):
     api.add_resource(RemoveWatchlist, '/remove_watchlist/<symbol>')
     api.add_resource(CreateUser, '/create_user')
     api.add_resource(getUsers, '/get_users')
+    api.add_resource(getCurrentUser, '/get_current_user')
     api.add_resource(UpdateUser, '/update_user/<username>')
     api.add_resource(ChangePassword, '/change_password/<username>')
 

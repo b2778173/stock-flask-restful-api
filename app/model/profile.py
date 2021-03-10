@@ -1,10 +1,13 @@
 from mongoengine import *
+from mongoengine.document import *
+from mongoengine.fields import *
 from app.model.watchlist import Watchlist
 from datetime import datetime
 from flask import jsonify
 import json
 from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
+
 
 
 class Address(EmbeddedDocument):
@@ -44,9 +47,15 @@ class Profile(Document):
             "name": self.name,
             "create_time": self.create_time,
             "email": self.email,
-            "social_media": self.social_media,
-            "address": self.address,
-            "watchlist": self.watchlist,
+            "social_media": json.dumps(self.social_media),
+            "address": json.dumps(self.address),
+            "watchlist": json.dumps(self.watchlist),
+        }
+
+    def get_current_profile(self):
+        return {
+            "_id": str(self.pk),
+            "username": self.username,
         }
 
     def getAll():
@@ -129,9 +138,9 @@ class Profile(Document):
     @staticmethod
     def identity(payload):
         user_id = payload['identity']
-        print('user_id', user_id)
+        # print('user_id', user_id)
         user = Profile.objects(id=user_id).first()
-        print('user identity', user)
+        # print('user identity', user)
         if user:
             user.pk = str(user.pk)
         return user

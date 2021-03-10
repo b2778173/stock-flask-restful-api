@@ -9,7 +9,7 @@ class Config:
     FINNHUB_BASE_URL = os.getenv("FINNHUB_BASE_URL")
     API_KEY = os.getenv("API_KEY")
     SECRET_KEY = "us_stock"
-    JWT_EXPIRATION = timedelta(seconds=3600)
+    JWT_EXPIRATION_DELTA = timedelta(seconds=3600)
 
 
 class DevelopmentConfig(Config):

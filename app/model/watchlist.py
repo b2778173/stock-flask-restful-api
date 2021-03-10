@@ -1,6 +1,7 @@
-from mongoengine import *
+from mongoengine import Document
 from flask import jsonify
 import json
+from mongoengine.fields import *
 
 
 class Watchlist(Document):

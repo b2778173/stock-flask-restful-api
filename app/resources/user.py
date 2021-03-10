@@ -1,16 +1,27 @@
-from flask import Flask, request, jsonify
+from flask import request, jsonify
 from flask_restful import Resource
-from app.model.profile import Profile
-from flask_jwt import jwt_required
+from app.model.profile import Profile as ProfileModel
+from flask_jwt import jwt_required, current_identity
+from flask_jwt import JWT
 
+
+jwt = JWT()
 
 class getUsers(Resource):
     @jwt_required()
     def get(self):
-        return Profile.getAll()
+        return ProfileModel.getAll()
+
+
+class getCurrentUser(Resource):
+    @jwt_required()
+    def get(self):
+        profile: ProfileModel = current_identity
+        return (profile.get_current_profile())
 
 
 class CreateUser(Resource):
+    @jwt.authentication_handler
     def post(self):
         print(request.get_json())
         username = request.get_json().get('username')
@@ -23,7 +34,7 @@ class CreateUser(Resource):
         watchlist = request.get_json().get('watchlist')
         print(username, create_time, email, social_media)
         try:
-            response = Profile.create_profile(self, username, password, name, create_time,
+            response = ProfileModel.create_profile(self, username, password, name, create_time,
                                               email, address, social_media, watchlist)
             return response, 201
         except Exception as e:
@@ -44,7 +55,7 @@ class UpdateUser(Resource):
         print(username, name, email, social_media, watchlist)
 
         try:
-            response = Profile.update_profile(self, username, name,
+            response = ProfileModel.update_profile(self, username, name,
                                               email, address, social_media, watchlist)
             print(f'update {username} success')
             return response, 201
@@ -62,7 +73,7 @@ class ChangePassword(Resource):
         print(username, password)
 
         try:
-            response = Profile.change_password(self, username, password)
+            response = ProfileModel.change_password(self, username, password)
             print(f"change {username}'s password success")
             return response, 201
         except Exception as e:
