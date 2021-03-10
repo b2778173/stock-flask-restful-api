@@ -9,7 +9,6 @@ from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
-
 class Address(EmbeddedDocument):
     city = StringField(required=True)
     zip_code = StringField(required=True)
@@ -45,12 +44,19 @@ class Profile(Document):
             "username": self.username,
             "password_hash": self.password_hash,
             "name": self.name,
-            "create_time": self.create_time,
+            "create_time": self.create_time.timestamp(),
             "email": self.email,
-            "social_media": json.dumps(self.social_media),
-            "address": json.dumps(self.address),
-            "watchlist": json.dumps(self.watchlist),
+            "social_media": self.social_media,
+            "address": self.address,
+            "watchlist": self.watchlist,
         }
+
+    def json_format(self):
+        profileJSON = json.loads(self.to_json())
+        profileJSON['_id'] = str(self.pk)
+        profileJSON['create_time'] = (self.create_time).timestamp()
+        del profileJSON['password_hash']
+        return profileJSON
 
     def get_current_profile(self):
         return {
@@ -62,14 +68,7 @@ class Profile(Document):
         # all = [json.loads(p.to_json()) for p in Profile.objects]
         all = []
         for p in Profile.objects:
-            profileJSON = json.loads(p.to_json())
-            # objectId = (profileJSON['_id'])['$oid']
-            profileJSON['_id'] = str(p.pk)
-            profileJSON['create_time'] = (p.create_time).timestamp()
-            # remove password
-            del profileJSON['password_hash']
-            all.append(profileJSON)
-
+            all.append(p.json_format())
         return jsonify(all)
 
     def create_profile(self, username, password, name, create_time, email, address, social_media, watchlist):

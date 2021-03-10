@@ -3,6 +3,8 @@ from flask_restful import Resource
 from app.model.profile import Profile as ProfileModel
 from flask_jwt import jwt_required, current_identity
 from flask_jwt import JWT
+import json
+
 
 
 jwt = JWT()
@@ -17,7 +19,7 @@ class getCurrentUser(Resource):
     @jwt_required()
     def get(self):
         profile: ProfileModel = current_identity
-        return (profile.get_current_profile())
+        return profile.get_current_profile()
 
 
 class CreateUser(Resource):
