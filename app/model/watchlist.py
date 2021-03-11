@@ -3,9 +3,10 @@ from flask import jsonify
 import json
 from mongoengine.fields import *
 
-
+# 2021/03/11 deprecate
 class Watchlist(Document):
     symbol = StringField(max_length=5, required=True,  primary_key=True)
+    company_name = StringField(required=True)
     market_cap = IntField(min_value=0, required=False, default=0)
     price = IntField(min_value=0, required=False, default=0)
 
