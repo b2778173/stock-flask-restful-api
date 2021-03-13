@@ -7,7 +7,7 @@ import json
 
 
 
-jwt = JWT()
+# jwt = JWT()
 
 class getUsers(Resource):
     @jwt_required()
@@ -23,7 +23,7 @@ class getCurrentUser(Resource):
 
 
 class CreateUser(Resource):
-    @jwt.authentication_handler
+    # @jwt.authentication_handler
     def post(self):
         print(request.get_json())
         username = request.get_json().get('username')
@@ -41,7 +41,7 @@ class CreateUser(Resource):
             return response, 201
         except Exception as e:
             print(f'insert fail, error: {e}')
-            return {'message': f'insert {username} fail, error: {e}'}, 403
+            return {'message': f'insert {username} fail, error: {e}'}, 400
 
 
 class UpdateUser(Resource):
@@ -63,7 +63,7 @@ class UpdateUser(Resource):
             return response, 201
         except Exception as e:
             print(f'update fail, error: {e}')
-            return {'message': f'update {username} fail, error: {e}'}, 403
+            return {'message': f'update {username} fail, error: {e}'}, 400
 
 
 class ChangePassword(Resource):
@@ -80,4 +80,4 @@ class ChangePassword(Resource):
             return response, 201
         except Exception as e:
             print(f'update fail, error: {e}')
-            return {'message': f'change {username} password fail, error: {e}'}, 403
+            return {'message': f'change {username} password fail, error: {e}'}, 400

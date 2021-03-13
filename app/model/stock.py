@@ -1,7 +1,11 @@
 from mongoengine import Document
-from mongoengine.fields import *
 from datetime import datetime
+from mongoengine.fields import DateTimeField, EmbeddedDocumentField, IntField, StringField
 
+class Stock(Document):
+    id = IntField()
+    name = StringField()
+    market_cap = IntField()
 
 
 class Comment(Document):

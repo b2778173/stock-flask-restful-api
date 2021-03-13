@@ -33,7 +33,7 @@ class AddWatchlist(Resource):
             return {'message': f'insert {symbol} success'}, 200
         except Exception as e:
             print(f'insert fail, error: {e}')
-            return {'message': f'insert {symbol} fail, error: {e}'}, 403
+            return {'message': f'insert {symbol} fail, error: {e}'}, 400
 
 
 class RemoveWatchlist(Resource):

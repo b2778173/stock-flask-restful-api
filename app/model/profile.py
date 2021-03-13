@@ -1,6 +1,5 @@
-from mongoengine import *
-from mongoengine.document import *
-from mongoengine.fields import *
+from mongoengine.document import Document, EmbeddedDocument
+from mongoengine.fields import DateTimeField, EmailField, EmbeddedDocumentField, EmbeddedDocumentListField, StringField
 from app.model.watchlist import Watchlist
 from datetime import datetime
 from flask import jsonify
