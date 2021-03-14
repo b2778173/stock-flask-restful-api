@@ -1,7 +1,7 @@
 from flask_cors import CORS
 from app.resources.user import CreateUser, getUsers, UpdateUser, ChangePassword, getCurrentUser
 from app.resources.watchlist import RemoveWatchlist, AddWatchlist, GetWatchlist
-from app.resources.stock import CompanyNews, News, Stock, Stock_candle, Day_mover
+from app.resources.stock import CompanyNews, News, Stock, Stock_candle, Day_mover, Quote
 from app.resources.portfolio import add_portfolio, get_portfolio_list
 from flask import Flask
 from flask_restful import Api
@@ -27,6 +27,7 @@ def create_app(config_name):
     # connect mongo
     setup(app.config['MONGODB_CONNECTION_STRING'])
 
+    api.add_resource(Quote, '/quote')
     api.add_resource(Stock, '/stock')
     api.add_resource(Stock_candle, '/stock_candle')
     api.add_resource(Day_mover, '/day_mover')

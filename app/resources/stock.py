@@ -77,6 +77,22 @@ class Day_mover(Resource):
         r = requests.get(url, headers=headers, params=querystring)
         return r.json()
 
+class Quote(Resource):
+    def get(self):
+        API_KEY = current_app.config["API_KEY"]
+        finnhub_client = finnhub.Client(api_key=API_KEY)
+        symbol = (request.args.get('category'))
+        r = finnhub_client.quote(symbol)
+        return r
+    def post(self):
+        all = []
+        API_KEY = current_app.config["API_KEY"]
+        finnhub_client = finnhub.Client(api_key=API_KEY)
+        symbols = request.get_json().get('symbols')
+        for s in symbols:
+            r = finnhub_client.quote(s)
+            all.append(r)
+        return all
 
 class News(Resource):
     def get(self):
