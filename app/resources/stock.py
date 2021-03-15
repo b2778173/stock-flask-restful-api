@@ -91,6 +91,7 @@ class Quote(Resource):
         symbols = request.get_json().get('symbols')
         for s in symbols:
             r = finnhub_client.quote(s)
+            r['change'] = (r['l']-r['pc']) / r['pc']
             all.append(r)
         return all
 
