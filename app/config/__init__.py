@@ -24,7 +24,7 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG = True
-    MONGODB_CONNECTION_STRING = os.getenv("Prod_MONGODB_CONNECTION_STRING")
+    MONGODB_CONNECTION_STRING = os.getenv("PROD_MONGODB_CONNECTION_STRING")
 
 
 config = {
