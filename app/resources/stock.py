@@ -1,6 +1,6 @@
 from flask import Flask, request, current_app, Blueprint
 from flask.globals import current_app
-from flask_restful import Resource
+from flask_restful import Resource, reqparse, inputs
 import requests
 import finnhub
 from datetime import datetime
@@ -73,9 +73,11 @@ class Day_mover(Resource):
             'x-rapidapi-key': "5e1711a842mshcdc573475e2a4f1p173affjsnee500c8bd126",
             'x-rapidapi-host': "apidojo-yahoo-finance-v1.p.rapidapi.com"
         }
-        querystring = {"region":"US","lang":"en-US","start":start,"count":count}
+        querystring = {"region": "US", "lang": "en-US",
+                       "start": start, "count": count}
         r = requests.get(url, headers=headers, params=querystring)
         return r.json()
+
 
 class Quote(Resource):
     def get(self):
@@ -84,6 +86,7 @@ class Quote(Resource):
         symbol = (request.args.get('category'))
         r = finnhub_client.quote(symbol)
         return r
+
     def post(self):
         all = []
         API_KEY = current_app.config["API_KEY"]
@@ -94,6 +97,7 @@ class Quote(Resource):
             r['change'] = (r['l']-r['pc']) / r['pc']
             all.append(r)
         return all
+
 
 class News(Resource):
     def get(self):
@@ -106,7 +110,16 @@ class News(Resource):
 
 
 class CompanyNews(Resource):
+    """ validation """
+    parser = reqparse.RequestParser()
+    parser.add_argument('symbol', type=inputs.regex('^[^0-9]+$'), required=True)
+    parser.add_argument('from', type=str, required=True)
+    parser.add_argument('to', type=str, required=True)
+
     def get(self):
+        """ validation """
+        data = CompanyNews.parser.parse_args()
+
         API_KEY = current_app.config["API_KEY"]
         finnhub_client = finnhub.Client(api_key=API_KEY)
         symbol = (request.args.get('symbol'))
