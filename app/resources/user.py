@@ -1,13 +1,11 @@
-from flask import request, jsonify
+import os
+
+from flask import request, Flask
 from flask_restful import Resource
 from app.model.profile import Profile as ProfileModel
 from flask_jwt import jwt_required, current_identity
-from flask_jwt import JWT
-import json
+from flask_mail import Mail, Message
 
-
-
-# jwt = JWT()
 
 class getUsers(Resource):
     @jwt_required()
@@ -37,7 +35,7 @@ class CreateUser(Resource):
         print(username, create_time, email, social_media)
         try:
             response = ProfileModel.create_profile(self, username, password, name, create_time,
-                                              email, address, social_media, watchlist)
+                                                   email, address, social_media, watchlist)
             return response, 201
         except Exception as e:
             print(f'insert fail, error: {e}')
@@ -58,7 +56,7 @@ class UpdateUser(Resource):
 
         try:
             response = ProfileModel.update_profile(self, username, name,
-                                              email, address, social_media, watchlist)
+                                                   email, address, social_media, watchlist)
             print(f'update {username} success')
             return response, 201
         except Exception as e:
@@ -81,3 +79,35 @@ class ChangePassword(Resource):
         except Exception as e:
             print(f'update fail, error: {e}')
             return {'message': f'change {username} password fail, error: {e}'}, 400
+
+
+class SendMail(Resource):
+    @staticmethod
+    def post(user):
+        app = Flask(__name__)
+        app.config.update(
+            MAIL_SERVER='smtp.gmail.com',
+            MAIL_PROT=587,
+            MAIL_USE_TLS=True,
+            MAIL_USERNAME=os.getenv("E_MAIL"),
+            MAIL_PASSWORD=os.getenv("MAIL_APPLICATION_PASSWORD")
+        )
+        #  記得先設置參數再做實作mail
+        mail = Mail(app)
+        #  主旨
+        msg_title = 'Hello It is Flask-Mail'
+        #  收件者，格式為list，否則報錯
+        msg_recipients = [user]
+        #  郵件內容
+        msg_body = 'Hey, I am mail body!'
+        #  也可以使用html
+        #  msg_html = '<h1>Hey,Flask-mail Can Use HTML</h1>'
+        msg = Message(msg_title, recipients=msg_recipients)
+        msg.body = msg_body
+        #  msg.html = msg_html
+
+        #  mail.send:寄出郵件
+        with app.app_context():
+            mail.send(msg)
+
+        return 'You Send Mail by Flask-Mail Success!!'

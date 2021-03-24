@@ -1,5 +1,5 @@
 from flask_cors import CORS
-from app.resources.user import CreateUser, getUsers, UpdateUser, ChangePassword, getCurrentUser
+from app.resources.user import CreateUser, getUsers, UpdateUser, ChangePassword, getCurrentUser, SendMail
 from app.resources.watchlist import RemoveWatchlist, AddWatchlist, GetWatchlist
 from app.resources.stock import CompanyNews, News, Stock, Stock_candle, Day_mover, Quote
 from app.resources.portfolio import add_portfolio, get_portfolio_list
@@ -43,5 +43,6 @@ def create_app(config_name):
     api.add_resource(ChangePassword, '/change_password/<username>')
     api.add_resource(get_portfolio_list, '/get_portfolio_list')
     api.add_resource(add_portfolio, '/add_portfolio')
+    api.add_resource(SendMail, '/sendmail/<user>')
 
     return app
