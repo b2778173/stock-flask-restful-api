@@ -1,6 +1,9 @@
 *.pyc
 .env
 .venv
+env
+venv
 
 #Intellj
 .idea/*
+.vscode
