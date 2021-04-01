@@ -1,6 +1,4 @@
-import os
-
-from flask import request, Flask
+from flask import request, Flask, current_app
 from flask_restful import Resource
 from app.model.profile import Profile as ProfileModel
 from flask_jwt import jwt_required, current_identity
@@ -89,8 +87,8 @@ class SendMail(Resource):
             MAIL_SERVER='smtp.gmail.com',
             MAIL_PROT=587,
             MAIL_USE_TLS=True,
-            MAIL_USERNAME=os.getenv("E_MAIL"),
-            MAIL_PASSWORD=os.getenv("MAIL_APPLICATION_PASSWORD")
+            MAIL_USERNAME=current_app.config["E_MAIL"],
+            MAIL_PASSWORD=current_app.config["MAIL_APPLICATION_PASSWORD"]
         )
         #  記得先設置參數再做實作mail
         mail = Mail(app)
@@ -102,7 +100,7 @@ class SendMail(Resource):
         msg_body = 'Hey, I am mail body!'
         #  也可以使用html
         #  msg_html = '<h1>Hey,Flask-mail Can Use HTML</h1>'
-        msg = Message(msg_title, recipients=msg_recipients)
+        msg = Message(msg_title, sender=user, recipients=msg_recipients)
         msg.body = msg_body
         #  msg.html = msg_html
 

@@ -10,6 +10,8 @@ class Config:
     API_KEY = os.getenv("API_KEY")
     SECRET_KEY = "us_stock"
     JWT_EXPIRATION_DELTA = timedelta(seconds=3600)
+    E_MAIL = os.getenv("E_MAIL")
+    MAIL_APPLICATION_PASSWORD = os.getenv("MAIL_APPLICATION_PASSWORD")
 
 
 class DevelopmentConfig(Config):
