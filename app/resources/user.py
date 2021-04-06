@@ -14,25 +14,25 @@ class User(Resource):
     """ validation """
     parser = reqparse.RequestParser()
     parser.add_argument(
-        'name', type=str, required=True, help='{error_msg}'
+        'name', type=str, required=True, help='name {error_msg}'
     )
     parser.add_argument(
-        'password', type=str, required=True, help='{error_msg}'
+        'password', min, type=str, required=True, help='password {error_msg}'
     )
     parser.add_argument(
-        'email', type=str, required=True, help='{error_msg}'
+        'email', type=str, required=True, help='email {error_msg}'
     )
     parser.add_argument(
-        'create_time', required=False, help='{error_msg}'
+        'create_time', required=False, help='create_time {error_msg}'
     )
     parser.add_argument(
-        'address', required=False, help='{error_msg}'
+        'address', required=False, help='address {error_msg}'
     )
     parser.add_argument(
-        'social_media', required=False, help='{error_msg}'
+        'social_media', required=False, help='social_media {error_msg}'
     )
     parser.add_argument(
-        'watchlist', required=False, help='{error_msg}'
+        'watchlist', required=False, help='watchlist {error_msg}'
     )
 
     """ get user detail """
@@ -55,6 +55,10 @@ class User(Resource):
         logging.debug(request.get_json())
 
         data = User.parser.parse_args()
+        data['address'] = data['address'].replace("'", '"')
+        data['social_media'] = data['social_media'].replace("'", '"')
+        data['watchlist'] = data['watchlist'].replace("'", '"')
+        print('data55555555555555', data)
 
         password = data['password']
         name = data['name']
@@ -73,7 +77,6 @@ class User(Resource):
         logging.debug('create a user params',username, create_time, email, social_media, watchlist)
         try:
             user = ProfileModel.get_by_username(username)
-            logging.debug('username',username, user)
             if user:
                 return {'error': 'user already exist'}, 404
 
