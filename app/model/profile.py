@@ -71,8 +71,9 @@ class Profile(Document):
         # all = [json.loads(p.to_json()) for p in Profile.objects]
         all = []
         for p in Profile.objects:
+            p :Profile
             all.append(p.json_format())
-        return jsonify(all)
+        return all
 
     """create_profile"""
 

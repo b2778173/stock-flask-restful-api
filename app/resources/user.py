@@ -74,7 +74,8 @@ class User(Resource):
         address = request.get_json().get('address')
         social_media = request.get_json().get('social_media')
         watchlist = request.get_json().get('watchlist')
-        logging.debug('create a user params',username, create_time, email, social_media, watchlist)
+        logging.debug('create a user params', username,
+                      create_time, email, social_media, watchlist)
         try:
             user = ProfileModel.get_by_username(username)
             if user:
@@ -118,7 +119,8 @@ class User(Resource):
 class getUserList(Resource):
     @jwt_required()
     def get(self):
-        return ProfileModel.getAll()
+        all_users = ProfileModel.getAll()
+        return {'result': all_users}, 200
 
 
 class getCurrentUser(Resource):

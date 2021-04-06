@@ -32,8 +32,7 @@ class Portfolio(Document):
             portfolioObj = json.loads(p.to_json())
             print('portfolioObj', portfolioObj)
             all.append(portfolioObj)
-        print('all', all)
-        return jsonify(all)
+        return all
 
     def insertPortfolio(self, symbol, company_name, history, trade_time, trade_price, market_price, profit, profit_percentage, memo, user_id):
         portfolio = Portfolio(symbol=symbol, company_name=company_name, history=history, trade_time=trade_time, trade_price=trade_price,
