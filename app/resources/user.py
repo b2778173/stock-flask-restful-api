@@ -1,11 +1,118 @@
 from flask import request, Flask, current_app
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 from app.model.profile import Profile as ProfileModel
 from flask_jwt import jwt_required, current_identity
 from flask_mail import Mail, Message
+import logging
+import json
 
 
-class getUsers(Resource):
+logging.basicConfig(filename='example.log', level=logging.DEBUG)
+
+
+class User(Resource):
+    """ validation """
+    parser = reqparse.RequestParser()
+    parser.add_argument(
+        'name', type=str, required=True, help='{error_msg}'
+    )
+    parser.add_argument(
+        'password', type=str, required=True, help='{error_msg}'
+    )
+    parser.add_argument(
+        'email', type=str, required=True, help='{error_msg}'
+    )
+    parser.add_argument(
+        'create_time', required=False, help='{error_msg}'
+    )
+    parser.add_argument(
+        'address', required=False, help='{error_msg}'
+    )
+    parser.add_argument(
+        'social_media', required=False, help='{error_msg}'
+    )
+    parser.add_argument(
+        'watchlist', required=False, help='{error_msg}'
+    )
+
+    """ get user detail """
+
+    def get(self, username):
+        logging.debug('username', username)
+        try:
+
+            user = ProfileModel.get_by_username(username)
+            if not user:
+                return {'message': 'user not found'}, 404
+            return {'result': user}, 200
+
+        except Exception as e:
+            return {'error': f'get {username} fail, error: {e}'}, 400
+
+    """ create a user"""
+
+    def post(self, username):
+        logging.debug(request.get_json())
+
+        data = User.parser.parse_args()
+
+        password = data['password']
+        name = data['name']
+        create_time = data['create_time']
+        email = data['email']
+        # address = json.loads(data['address'])
+        # social_media = json.loads(data['social_media'])
+        # watchlist = json.loads(data['watchlist'])
+        # password = request.get_json().get('password')
+        # name = request.get_json().get('name')
+        # create_time = request.get_json().get('create_time')
+        # email = request.get_json().get('email')
+        address = request.get_json().get('address')
+        social_media = request.get_json().get('social_media')
+        watchlist = request.get_json().get('watchlist')
+        logging.debug('create a user params',username, create_time, email, social_media, watchlist)
+        try:
+            user = ProfileModel.get_by_username(username)
+            logging.debug('username',username, user)
+            if user:
+                return {'error': 'user already exist'}, 404
+
+            response = ProfileModel.create_profile(self, username, password, name, create_time,
+                                                   email, address, social_media, watchlist)
+            logging.debug(f'create {username} success')
+            return response, 201
+        except Exception as e:
+            logging.debug(f'insert fail, error: {e}')
+            return {'error': f'create {username} fail, error: {e}'}, 400
+
+    """ update a user"""
+    @jwt_required()
+    def put(self, username):
+        logging.debug(request.get_json())
+        name = request.get_json().get('name')
+        email = request.get_json().get('email')
+        address = request.get_json().get('address')
+        social_media = request.get_json().get('social_media')
+        watchlist = request.get_json().get('watchlist')
+        logging.debug(username, name, email, social_media, watchlist)
+
+        try:
+            user = ProfileModel.get_by_username(username)
+            logging.debug(username, user)
+            if not user:
+                return {'error': 'user not found'}, 404
+
+            response = ProfileModel.update_profile(self, username, name,
+                                                   email, address, social_media, watchlist)
+
+            logging.debug(f'update {username} success')
+            return {'message': response}, 201
+        except Exception as e:
+            logging.debug(f'update fail, error: {e}')
+            return {'error': f'update {username} fail, error: {e}'}, 400
+
+
+class getUserList(Resource):
     @jwt_required()
     def get(self):
         return ProfileModel.getAll()
@@ -18,65 +125,21 @@ class getCurrentUser(Resource):
         return profile.get_current_profile()
 
 
-class CreateUser(Resource):
-    # @jwt.authentication_handler
-    def post(self):
-        print(request.get_json())
-        username = request.get_json().get('username')
-        password = request.get_json().get('password')
-        name = request.get_json().get('name')
-        create_time = request.get_json().get('create_time')
-        email = request.get_json().get('email')
-        address = request.get_json().get('address')
-        social_media = request.get_json().get('social_media')
-        watchlist = request.get_json().get('watchlist')
-        print(username, create_time, email, social_media)
-        try:
-            response = ProfileModel.create_profile(self, username, password, name, create_time,
-                                                   email, address, social_media, watchlist)
-            return response, 201
-        except Exception as e:
-            print(f'insert fail, error: {e}')
-            return {'message': f'insert {username} fail, error: {e}'}, 400
-
-
-class UpdateUser(Resource):
-    @jwt_required()
-    def post(self, username):
-        print(request.get_json())
-        name = request.get_json().get('name')
-        create_time = request.get_json().get('create_time')
-        email = request.get_json().get('email')
-        address = request.get_json().get('address')
-        social_media = request.get_json().get('social_media')
-        watchlist = request.get_json().get('watchlist')
-        print(username, name, email, social_media, watchlist)
-
-        try:
-            response = ProfileModel.update_profile(self, username, name,
-                                                   email, address, social_media, watchlist)
-            print(f'update {username} success')
-            return response, 201
-        except Exception as e:
-            print(f'update fail, error: {e}')
-            return {'message': f'update {username} fail, error: {e}'}, 400
-
-
 class ChangePassword(Resource):
     @jwt_required()
     def post(self, username):
-        print(self)
-        print(request.get_json())
+        logging.debug(self)
+        logging.debug(request.get_json())
         password = request.get_json().get('password')
-        print(username, password)
+        logging.debug(username, password)
 
         try:
             response = ProfileModel.change_password(self, username, password)
-            print(f"change {username}'s password success")
+            logging.debug(f"change {username}'s password success")
             return response, 201
         except Exception as e:
-            print(f'update fail, error: {e}')
-            return {'message': f'change {username} password fail, error: {e}'}, 400
+            logging.debug(f'update fail, error: {e}')
+            return {'error': f'change {username} password fail, error: {e}'}, 400
 
 
 class SendMail(Resource):

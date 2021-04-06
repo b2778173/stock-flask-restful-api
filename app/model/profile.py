@@ -37,6 +37,8 @@ class Profile(Document):
 
     meta = {'db_alias': 'good'}
 
+    """to dict obj"""
+
     def to_dict(self):
         return {
             "_id": str(self.pk),
@@ -50,6 +52,8 @@ class Profile(Document):
             "watchlist": self.watchlist,
         }
 
+    """json format """
+
     def json_format(self):
         profileJSON = json.loads(self.to_json())
         profileJSON['_id'] = str(self.pk)
@@ -62,7 +66,7 @@ class Profile(Document):
             "_id": str(self.pk),
             "username": self.username,
         }
-
+    """get user list"""
     def getAll():
         # all = [json.loads(p.to_json()) for p in Profile.objects]
         all = []
@@ -70,39 +74,39 @@ class Profile(Document):
             all.append(p.json_format())
         return jsonify(all)
 
+    """create_profile"""
+
     def create_profile(self, username, password, name, create_time, email, address, social_media, watchlist):
-        print(username, password, create_time, email,
+        print(username, password, email,
               address, social_media, watchlist)
         password_hash = Profile.set_password(self, password)
         profile = Profile(username=username, password_hash=password_hash, name=name, create_time=create_time,
                           email=email, address=address, social_media=social_media, watchlist=watchlist)
         profile.save()
         return {'message': f'{username} create success'}
+        
+    """update profile"""
 
     def update_profile(self, username, name, email, address, social_media, watchlist):
         profile = Profile.objects(username=username).first()
-        print('user=', profile.to_json())
-        if not profile:
-            print('user not found')
-            return {'error': 'user not found'}
-        else:
-            if name:
-                profile.name = name
-            if email:
-                profile.email = email
-            if address:
-                profile.address = address
-            if social_media:
-                profile.social_media = social_media
-            if watchlist:
-                result = []
-                for w in watchlist:
-                    w1 = Watchlist(symbol=w['symbol'], memo=w['memo'])
-                    result.append(w1)
-                    print('result=', result)
-                profile.watchlist = result
-            profile.save()
-            return {'message': f'{username} update success'}
+
+        if name:
+            profile.name = name
+        if email:
+            profile.email = email
+        if address:
+            profile.address = address
+        if social_media:
+            profile.social_media = social_media
+        if watchlist:
+            result = []
+            for w in watchlist:
+                w1 = Watchlist(symbol=w['symbol'], memo=w['memo'])
+                result.append(w1)
+                print('result=', result)
+            profile.watchlist = result
+        profile.save()
+        return f'{username} update success'
 
     def change_password(self, username, password):
         profile = Profile.objects(username=username).first()
@@ -142,3 +146,12 @@ class Profile(Document):
         if user:
             user.pk = str(user.pk)
         return user
+
+    @staticmethod
+    def get_by_username(username):
+        user: Profile = Profile.objects(username=username).first()
+        print(user)
+        if user:
+            return (user.json_format())
+        else:
+            return user

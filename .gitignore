@@ -3,6 +3,7 @@
 .venv
 env
 venv
+*.log
 
 #Intellj
 .idea/*
