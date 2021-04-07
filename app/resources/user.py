@@ -119,7 +119,7 @@ class User(Resource):
 class getUserList(Resource):
     @jwt_required()
     def get(self):
-        return ProfileModel.getAll()
+        return {'result': ProfileModel.getAll()}, 200
 
 
 class getCurrentUser(Resource):
@@ -162,7 +162,7 @@ class ChangePassword(Resource):
                 self, username, new_password)
 
             logging.debug(f"change User: {username}'s password success")
-            
+
             return {'message': response}, 200
 
         except Exception as e:
