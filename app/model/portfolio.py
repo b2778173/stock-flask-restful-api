@@ -1,4 +1,5 @@
 
+from bson.json_util import default
 from mongoengine.document import Document, EmbeddedDocument
 from mongoengine.fields import DateTimeField, EmbeddedDocumentListField, FloatField, IntField, StringField
 from flask import jsonify
@@ -18,25 +19,23 @@ class Portfolio(Document):
     history = EmbeddedDocumentListField(History, default=[])
     trade_time = DateTimeField(default=datetime.now)
     trade_price = FloatField(min_value=0, required=True)
-    market_price = IntField(min_value=0, required=True)
-    profit = IntField(required=True)
-    profit_percentage = FloatField()
+    market_price = FloatField(min_value=0, required=True)
+    profit = FloatField(default=0)
+    profit_percentage = FloatField(default=0)
     memo = StringField()
     user_id = StringField(required=True)
 
     meta = {'db_alias': 'good'}
 
-    def getPortfolioList(user_id):
+    def find(user_id):
         all = []
         for p in Portfolio.objects(user_id=user_id):
             portfolioObj = json.loads(p.to_json())
-            print('portfolioObj', portfolioObj)
             all.append(portfolioObj)
-        print('all', all)
-        return jsonify(all)
+        return all
 
-    def insertPortfolio(self, symbol, company_name, history, trade_time, trade_price, market_price, profit, profit_percentage, memo, user_id):
+    def insert(self, symbol, company_name, history, trade_time, trade_price, market_price, memo, user_id):
         portfolio = Portfolio(symbol=symbol, company_name=company_name, history=history, trade_time=trade_time, trade_price=trade_price,
-                              market_price=market_price, profit=profit, profit_percentage=profit_percentage, memo=memo, user_id=user_id)
+                              market_price=market_price, memo=memo, user_id=user_id)
         response = Portfolio.objects.insert(portfolio, load_bulk=False)
-        return {'message': f'{response} add portfolio success'}
+        return f'{response} add portfolio success'

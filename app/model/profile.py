@@ -58,7 +58,7 @@ class Profile(Document):
         profileJSON = json.loads(self.to_json())
         profileJSON['_id'] = str(self.pk)
         profileJSON['create_time'] = (self.create_time).timestamp()
-        del profileJSON['password_hash']
+        # del profileJSON['password_hash']
         return profileJSON
 
     def get_current_profile(self):
@@ -72,7 +72,7 @@ class Profile(Document):
         all = []
         for p in Profile.objects:
             all.append(p.json_format())
-        return jsonify(all)
+        return all
 
     """create_profile"""
 
@@ -84,7 +84,7 @@ class Profile(Document):
                           email=email, address=address, social_media=social_media, watchlist=watchlist)
         profile.save()
         return {'message': f'{username} create success'}
-        
+
     """update profile"""
 
     def update_profile(self, username, name, email, address, social_media, watchlist):
@@ -109,14 +109,10 @@ class Profile(Document):
         return f'{username} update success'
 
     def change_password(self, username, password):
-        profile = Profile.objects(username=username).first()
-        if not profile:
-            print('user not found')
-            return {'error': 'user not found'}
-        else:
-            profile.set_password(profile, password)
-            profile.save()
-            return {'message': f'{username} change password success', "result": profile.password_hash}
+        profile: Profile = Profile.objects(username=username).first()
+        profile.set_password(profile, password)
+        profile.save()
+        return 'change password success'
 
     @staticmethod
     def set_password(self, password):
@@ -125,12 +121,11 @@ class Profile(Document):
         return self.password_hash
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        return check_password_hash(self['password_hash'], password)
 
     @staticmethod
     def authenticate(username, password):
         user = Profile.objects(username=username).first()
-        print('authenticate user=', user, username)
         if user:
             if user.check_password(password):
                 # 將mongo pk objectId type轉為string
