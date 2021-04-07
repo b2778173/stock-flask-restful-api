@@ -74,7 +74,8 @@ class User(Resource):
         address = request.get_json().get('address')
         social_media = request.get_json().get('social_media')
         watchlist = request.get_json().get('watchlist')
-        logging.debug('create a user params',username, create_time, email, social_media, watchlist)
+        logging.debug('create a user params', username,
+                      create_time, email, social_media, watchlist)
         try:
             user = ProfileModel.get_by_username(username)
             if user:
@@ -129,20 +130,45 @@ class getCurrentUser(Resource):
 
 
 class ChangePassword(Resource):
+    """ validation """
+    parser = reqparse.RequestParser()
+    parser.add_argument(
+        'old_password', type=str, required=True, help='old_password {error_msg}'
+    )
+    parser.add_argument(
+        'new_password', type=str, required=True, help='new_password {error_msg}'
+    )
+
     @jwt_required()
     def post(self, username):
-        logging.debug(self)
-        logging.debug(request.get_json())
-        password = request.get_json().get('password')
-        logging.debug(username, password)
+        data = ChangePassword.parser.parse_args()
+        logging.debug(data)
+        old_password = data['old_password']
+        new_password = data['new_password']
+
+        # old_password = request.get_json()['old_password']
+        # new_password = request.get_json()['new_password']
 
         try:
-            response = ProfileModel.change_password(self, username, password)
-            logging.debug(f"change {username}'s password success")
-            return response, 201
+            user: ProfileModel = ProfileModel.get_by_username(username)
+
+            if not user:
+                return {'error': 'user not found'}, 404
+
+            if not ProfileModel.check_password(user, old_password):
+                return {'error': 'old password is not match'}, 403
+
+            response = ProfileModel.change_password(
+                self, username, new_password)
+
+            logging.debug(f"change User: {username}'s password success")
+            
+            return {'message': response}, 200
+
         except Exception as e:
+
             logging.debug(f'update fail, error: {e}')
-            return {'error': f'change {username} password fail, error: {e}'}, 400
+            return {'error': f'change User: {username} password fail, error: {e}'}, 400
 
 
 class SendMail(Resource):
