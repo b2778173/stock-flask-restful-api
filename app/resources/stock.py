@@ -1,3 +1,4 @@
+from logging import Logger
 from flask import Flask, request, current_app, Blueprint
 from flask.globals import current_app
 from flask_restful import Resource, reqparse, inputs
@@ -119,7 +120,7 @@ class CompanyNews(Resource):
     def get(self):
         """ validation """
         data = CompanyNews.parser.parse_args()
-
+        print(data)
         API_KEY = current_app.config["API_KEY"]
         finnhub_client = finnhub.Client(api_key=API_KEY)
         symbol = (request.args.get('symbol'))

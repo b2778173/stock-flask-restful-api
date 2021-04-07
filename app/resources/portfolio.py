@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, reqparse, inputs
 from flask import request
 from flask_jwt import jwt_required, current_identity
 from app.model.portfolio import Portfolio as PortfolioModel
@@ -18,11 +18,11 @@ def get_user():
 class Portfolio(Resource):
     """ validation """
     parser = reqparse.RequestParser()
+    parser.add_argument('symbol', type=inputs.regex(
+        '^[^0-9]+$'), required=True, help='symbol {error_msg}')
+
     parser.add_argument(
-        'symbol', type=str, required=True, help='symbol {error_msg}'
-    )
-    parser.add_argument(
-        'company_name', min, type=str, required=True, help='company_name {error_msg}'
+        'company_name', min, type=str, required=False, help='company_name {error_msg}'
     )
     parser.add_argument(
         'history', type=str, required=True, help='history {error_msg}'
@@ -75,3 +75,15 @@ class Portfolio(Resource):
         except Exception as e:
             logging.debug(f'insert fail, error: {e}')
             return {'error': f'insert {symbol} fail, error: {e}'}, 400
+
+    """delete portfolio"""
+    @jwt_required()
+    def delete():
+        # try:
+        user_id = get_user()
+        symbol = request.args['symbol']
+        print(user_id, symbol)
+        return {'result': PortfolioModel.delete(user_id, symbol)}, 200
+
+        # except Exception as e:
+        #     return {'message': f'delete_portfolio fail, error: {e}'}, 400

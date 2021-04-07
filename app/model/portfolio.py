@@ -5,6 +5,8 @@ from mongoengine.fields import DateTimeField, EmbeddedDocumentListField, FloatFi
 from flask import jsonify
 import json
 from datetime import datetime
+from mongoengine.queryset.visitor import Q
+
 
 
 class History(EmbeddedDocument):
@@ -39,3 +41,12 @@ class Portfolio(Document):
                               market_price=market_price, memo=memo, user_id=user_id)
         response = Portfolio.objects.insert(portfolio, load_bulk=False)
         return f'{response} add portfolio success'
+
+    def delete(user_id, symbol):
+        print('2222222222222', user_id, symbol)
+        portfolio = Portfolio.objects(Q(user_id=user_id)& Q(symbol=symbol)).all()
+        print('11111', portfolio)
+        if not portfolio:
+            return f'portfolio symbol: {symbol} not found'
+        portfolio.delete()
+        return f'delete_portfolio symbol: {symbol} success'

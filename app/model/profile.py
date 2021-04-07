@@ -66,12 +66,14 @@ class Profile(Document):
             "_id": str(self.pk),
             "username": self.username,
         }
+
     """get user list"""
+    
     def getAll():
         # all = [json.loads(p.to_json()) for p in Profile.objects]
         all = []
         for p in Profile.objects:
-            p :Profile
+            p: Profile
             all.append(p.json_format())
         return all
 
