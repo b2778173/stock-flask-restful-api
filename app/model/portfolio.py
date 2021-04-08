@@ -8,7 +8,6 @@ from datetime import datetime
 from mongoengine.queryset.visitor import Q
 
 
-
 class History(EmbeddedDocument):
     quantity = IntField(required=True)
     trade_time = DateTimeField(default=datetime.now)
@@ -44,9 +43,9 @@ class Portfolio(Document):
 
     def delete(user_id, symbol):
         print('2222222222222', user_id, symbol)
-        portfolio = Portfolio.objects(Q(user_id=user_id)& Q(symbol=symbol)).all()
-        print('11111', portfolio)
+        portfolio = Portfolio.objects(user_id=user_id, symbol=symbol)
+
         if not portfolio:
             return f'portfolio symbol: {symbol} not found'
-        portfolio.delete()
+        print(portfolio.delete())
         return f'delete_portfolio symbol: {symbol} success'
