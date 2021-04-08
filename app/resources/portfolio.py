@@ -78,7 +78,7 @@ class Portfolio(Resource):
 
     """delete portfolio"""
     @jwt_required()
-    def delete():
+    def delete(self):
         # try:
         user_id = get_user()
         symbol = request.args['symbol']
@@ -87,3 +87,4 @@ class Portfolio(Resource):
 
         # except Exception as e:
         #     return {'message': f'delete_portfolio fail, error: {e}'}, 400
+
